@@ -125,8 +125,8 @@ CREATE TABLE Cook(
 -- Trigger 1: Check Evaluation Date
 DELIMITER $$
 CREATE TRIGGER CheckEvaluationDate
-BEFORE INSERT ON Evaluation
-FOR EACH ROW
+    BEFORE INSERT ON Evaluation
+    FOR EACH ROW
 BEGIN
     DECLARE v_offer_date DATE;
     SELECT Date INTO v_offer_date FROM Offer WHERE IdOffer = NEW.IdOffer;
@@ -139,36 +139,65 @@ DELIMITER ;
 -- Trigger 2: Validate Forks Rating for Restaurant
 DELIMITER $$
 CREATE TRIGGER ValidateForksRating
-BEFORE INSERT OR UPDATE ON Restaurant
-FOR EACH ROW
+    BEFORE INSERT OR UPDATE ON Restaurant
+    FOR EACH ROW
 BEGIN
     IF NEW.Forks < 1 OR NEW.Forks > 5 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Forks rating must be between 1 and 5';
-    END IF;
+END IF;
 END$$
 DELIMITER ;
 
 -- Trigger 3: Validate Score of Evaluation
 DELIMITER $$
 CREATE TRIGGER ValidateEvaluationScore
-BEFORE INSERT OR UPDATE ON Evaluation
-FOR EACH ROW
+    BEFORE INSERT OR UPDATE ON Evaluation
+    FOR EACH ROW
 BEGIN
     IF NEW.Score < 1 OR NEW.Score > 5 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Evaluation score must be between 1 and 5';
-    END IF;
+END IF;
 END$$
 DELIMITER ;
 
 -- Trigger 4: Validate Offer Date
 DELIMITER $$
 CREATE TRIGGER ValidateOfferDate
-BEFORE INSERT OR UPDATE ON Offer
-FOR EACH ROW
+    BEFORE INSERT OR UPDATE ON Offer
+    FOR EACH ROW
 BEGIN
     IF NEW.Date < (CURDATE() + INTERVAL 2 WEEK) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Offer date must be at least two weeks from today';
-    END IF;
+END IF;
 END$$
 DELIMITER ;
+
+
+-- Indexes for the City table
+CREATE INDEX idx_namearea ON City(NameArea);
+
+-- Indexes for the Restaurant table
+CREATE INDEX idx_namecity ON Restaurant(NameCity);
+CREATE INDEX idx_typecooking ON Restaurant(TypeCooking);
+
+-- Indexes for the Offer table
+CREATE INDEX idx_idrest ON Offer(IdRest);
+CREATE INDEX idx_timezone ON Offer(Time_Zone);
+CREATE INDEX idx_date ON Offer(Date);
+
+-- Indexes for the Evaluation table
+CREATE INDEX idx_idoffer ON Evaluation(IdOffer);
+
+-- Indexes for the Menu table
+CREATE INDEX idx_namedish1 ON Menu(NameDish1);
+CREATE INDEX idx_namedish2 ON Menu(NameDish2);
+CREATE INDEX idx_dessert ON Menu(Dessert);
+
+-- Indexes for the DishDay table
+CREATE INDEX idx_name_dish ON DishDay(NameDish);
+CREATE INDEX idx_idpdd ON DishDay(IdPdd);
+
+-- Indexes for the Person table
+CREATE INDEX idx_idrestaurant ON Person(IdRestaurant);
+
 
