@@ -179,6 +179,7 @@ CREATE INDEX idx_namearea ON City(NameArea);
 -- Indexes for the Restaurant table
 CREATE INDEX idx_namecity ON Restaurant(NameCity);
 CREATE INDEX idx_typecooking ON Restaurant(TypeCooking);
+CREATE INDEX idx_description ON Area(Description);
 
 -- Indexes for the Offer table
 CREATE INDEX idx_idrest ON Offer(IdRest);
